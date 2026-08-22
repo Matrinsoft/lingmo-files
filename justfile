@@ -54,7 +54,12 @@ build-release-applet *args:
     cargo build --package {{applet-name}} --release {{args}}
 
 # Compiles release profile with vendored dependencies
-build-vendored *args: vendor-extract (build-release '--frozen --offline' args)
+build-vendored *args:
+    vendor-extract
+    cp Cargo.toml Cargo.toml.bak
+    sed -i '/^\[patch/,/^$/d' Cargo.toml
+    cargo build --release {{ args }} --frozen --offline
+    mv Cargo.toml.bak Cargo.toml
 
 # Runs a clippy check
 check *args:
@@ -111,8 +116,7 @@ uninstall:
 vendor:
     #!/usr/bin/env bash
     mkdir -p .cargo
-    cargo vendor --locked --sync Cargo.toml | head -n -1 > .cargo/config.toml
-    echo 'directory = "vendor"' >> .cargo/config.toml
+    cargo vendor --locked --sync Cargo.toml 2>/dev/null | awk '/^\[/{p=1} p' > .cargo/config.toml
     echo >> .cargo/config.toml
     echo '[env]' >> .cargo/config.toml
     if [ -n "${SOURCE_DATE_EPOCH}" ]
