@@ -1,6 +1,6 @@
 use crate::mime_icon::mime_for_path;
 use crate::operation::{Controller, OpReader, OperationError, OperationErrorType};
-use lingmo::iced::futures;
+use cosmic::iced::futures;
 use jiff::Zoned;
 use jiff::civil::DateTime;
 use jiff::tz::TimeZone;

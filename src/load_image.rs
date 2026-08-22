@@ -1,4 +1,4 @@
-use lingmo::iced::{core as iced_core, widget as iced_widget};
+use cosmic::iced::{core as iced_core, widget as iced_widget};
 use iced_core::event::Event;
 use iced_core::widget::{Operation, Tree};
 use iced_core::{
@@ -7,11 +7,11 @@ use iced_core::{
 };
 
 pub fn loaded_image<'a, Message: 'static, Theme>(
-    handle: <lingmo::Renderer as iced_core::image::Renderer>::Handle,
-) -> LoadedImage<'a, Message, Theme, lingmo::Renderer>
+    handle: <cosmic::Renderer as iced_core::image::Renderer>::Handle,
+) -> LoadedImage<'a, Message, Theme, cosmic::Renderer>
 where
     Theme: iced_widget::container::Catalog,
-    <Theme as iced_widget::container::Catalog>::Class<'a>: From<lingmo::theme::Container<'a>>,
+    <Theme as iced_widget::container::Catalog>::Class<'a>: From<cosmic::theme::Container<'a>>,
 {
     LoadedImage::new(handle)
 }
@@ -27,7 +27,7 @@ where
     Renderer: iced_core::Renderer + iced_core::image::Renderer,
 {
     handle: <Renderer as iced_core::image::Renderer>::Handle,
-    content: lingmo::iced::Element<'a, Message, Theme, Renderer>,
+    content: cosmic::iced::Element<'a, Message, Theme, Renderer>,
 }
 
 impl<'a, Message, Theme, Renderer> LoadedImage<'a, Message, Theme, Renderer>
@@ -39,7 +39,7 @@ where
     pub(crate) fn new(handle: <Renderer as iced_core::image::Renderer>::Handle) -> Self {
         LoadedImage {
             handle: handle.clone(),
-            content: lingmo::widget::Image::new(handle).into(),
+            content: cosmic::widget::Image::new(handle).into(),
         }
     }
 }

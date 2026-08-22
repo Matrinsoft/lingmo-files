@@ -1,27 +1,27 @@
 // Copyright 2023 System76 <info@system76.com>
 // SPDX-License-Identifier: GPL-3.0-only
 
-use lingmo::app::{self, Core, Task, context_drawer};
-use lingmo::core::Auto;
-use lingmo::cosmic_config::{self, ConfigSet};
-use lingmo::iced::clipboard::dnd::DndAction;
-use lingmo::iced::core::SmolStr;
-use lingmo::iced::core::widget::operation::focusable::unfocus;
-use lingmo::iced::futures::{self, SinkExt};
-use lingmo::iced::keyboard::key::Physical;
-use lingmo::iced::keyboard::{Event as KeyEvent, Key, Modifiers};
+use cosmic::app::{self, Core, Task, context_drawer};
+use cosmic::core::Auto;
+use cosmic::cosmic_config::{self, ConfigSet};
+use cosmic::iced::clipboard::dnd::DndAction;
+use cosmic::iced::core::SmolStr;
+use cosmic::iced::core::widget::operation::focusable::unfocus;
+use cosmic::iced::futures::{self, SinkExt};
+use cosmic::iced::keyboard::key::Physical;
+use cosmic::iced::keyboard::{Event as KeyEvent, Key, Modifiers};
 #[cfg(all(feature = "wayland", feature = "desktop-applet"))]
-use lingmo::iced::platform_specific::shell::wayland::commands::overlap_notify::overlap_notify;
-use lingmo::iced::runtime::{clipboard, task};
-use lingmo::iced::widget::button::focus;
-use lingmo::iced::widget::scrollable;
-use lingmo::iced::widget::scrollable::AbsoluteOffset;
-use lingmo::iced::window::{self, Event as WindowEvent, Id as WindowId};
-use lingmo::iced::{
+use cosmic::iced::platform_specific::shell::wayland::commands::overlap_notify::overlap_notify;
+use cosmic::iced::runtime::{clipboard, task};
+use cosmic::iced::widget::button::focus;
+use cosmic::iced::widget::scrollable;
+use cosmic::iced::widget::scrollable::AbsoluteOffset;
+use cosmic::iced::window::{self, Event as WindowEvent, Id as WindowId};
+use cosmic::iced::{
     self, Alignment, Event, Length, Rectangle, Size, Subscription, event, mouse, stream,
 };
 #[cfg(all(feature = "wayland", feature = "desktop-applet"))]
-use lingmo::iced::{
+use cosmic::iced::{
     Limits, Point,
     event::wayland::{Event as WaylandEvent, OutputEvent, OverlapNotifyEvent},
     platform_specific::runtime::wayland::layer_surface::{
@@ -31,13 +31,13 @@ use lingmo::iced::{
         Anchor, KeyboardInteractivity, Layer, destroy_layer_surface,
     },
 };
-use lingmo::widget::about::About;
-use lingmo::widget::dnd_destination::DragId;
-use lingmo::widget::menu::action::MenuAction;
-use lingmo::widget::menu::key_bind::KeyBind;
-use lingmo::widget::segmented_button::{self, Entity, ReorderEvent};
-use lingmo::widget::{self, icon, settings, space};
-use lingmo::{Application, ApplicationExt, Element, cosmic_theme, executor, style, surface, theme};
+use cosmic::widget::about::About;
+use cosmic::widget::dnd_destination::DragId;
+use cosmic::widget::menu::action::MenuAction;
+use cosmic::widget::menu::key_bind::KeyBind;
+use cosmic::widget::segmented_button::{self, Entity, ReorderEvent};
+use cosmic::widget::{self, icon, settings, space};
+use cosmic::{Application, ApplicationExt, Element, cosmic_theme, executor, style, surface, theme};
 use mime_guess::Mime;
 use notify_debouncer_full::notify::{self, RecommendedWatcher};
 use notify_debouncer_full::{DebouncedEvent, Debouncer, RecommendedCache, new_debouncer};
@@ -324,10 +324,10 @@ pub enum NavMenuAction {
 }
 
 impl MenuAction for NavMenuAction {
-    type Message = lingmo::Action<Message>;
+    type Message = cosmic::Action<Message>;
 
     fn message(&self) -> Self::Message {
-        lingmo::Action::App(Message::NavMenuAction(*self))
+        cosmic::Action::App(Message::NavMenuAction(*self))
     }
 }
 
@@ -623,7 +623,7 @@ impl DialogPages {
 
     pub fn push_back(&mut self, page: DialogPage) -> Task<Message> {
         let task = if self.pages.is_empty() {
-            Task::done(lingmo::Action::App(Message::DesktopDialogs(true)))
+            Task::done(cosmic::Action::App(Message::DesktopDialogs(true)))
         } else {
             Task::none()
         };
@@ -633,7 +633,7 @@ impl DialogPages {
 
     pub fn push_front(&mut self, page: DialogPage) -> Task<Message> {
         let task = if self.pages.is_empty() {
-            Task::done(lingmo::Action::App(Message::DesktopDialogs(true)))
+            Task::done(cosmic::Action::App(Message::DesktopDialogs(true)))
         } else {
             Task::none()
         };
@@ -645,7 +645,7 @@ impl DialogPages {
     pub fn pop_front(&mut self) -> Option<(DialogPage, Task<Message>)> {
         let page = self.pages.pop_front()?;
         let task = if self.pages.is_empty() {
-            Task::done(lingmo::Action::App(Message::DesktopDialogs(false)))
+            Task::done(cosmic::Action::App(Message::DesktopDialogs(false)))
         } else {
             Task::none()
         };
@@ -883,8 +883,8 @@ impl App {
 
     #[cfg(feature = "desktop")]
     fn launch_desktop_entries(paths: &[impl AsRef<Path>]) {
-        use lingmo::desktop::fde::DesktopEntry;
-        let locales = lingmo::desktop::fde::get_languages_from_env();
+        use cosmic::desktop::fde::DesktopEntry;
+        let locales = cosmic::desktop::fde::get_languages_from_env();
 
         for path in paths.iter().map(AsRef::as_ref) {
             match DesktopEntry::from_path::<&str>(path, None) {
@@ -978,7 +978,7 @@ impl App {
     }
 
     #[cfg(feature = "desktop")]
-    fn exec_entry_action(entry: &lingmo::desktop::DesktopEntryData, action: usize) {
+    fn exec_entry_action(entry: &cosmic::desktop::DesktopEntryData, action: usize) {
         if let Some(action) = entry.desktop_actions.get(action) {
             // Largely copied from COSMIC app library
             let mut exec = shlex::Shlex::new(&action.exec);
@@ -1270,7 +1270,7 @@ impl App {
             .insert(id, (operation.clone(), controller.clone()));
 
         // Use a task to send operations to the compio runtime thread.
-        lingmo::Task::stream(lingmo::iced::stream::channel(4, move |msg_tx| async move {
+        cosmic::Task::stream(cosmic::iced::stream::channel(4, move |msg_tx| async move {
             let (tx, rx) = tokio::sync::oneshot::channel();
 
             let msg_tx = Arc::new(tokio::sync::Mutex::new(msg_tx));
@@ -1292,7 +1292,7 @@ impl App {
                 let _ = msg_tx.lock().await.send(msg).await;
             }
         }))
-        .map(lingmo::Action::App)
+        .map(cosmic::Action::App)
     }
 
     /// Will join operations together into a single task that will return a single
@@ -1310,10 +1310,10 @@ impl App {
                 |mut acc, message| {
                     if let Message::PendingResults(completed, errors) = &mut acc {
                         match message {
-                            lingmo::Action::App(Message::PendingComplete(id, selection)) => {
+                            cosmic::Action::App(Message::PendingComplete(id, selection)) => {
                                 completed.push((id, selection));
                             }
-                            lingmo::Action::App(Message::PendingError(id, err)) => {
+                            cosmic::Action::App(Message::PendingError(id, err)) => {
                                 errors.push((id, err));
                             }
                             _ => {}
@@ -1322,7 +1322,7 @@ impl App {
                     acc
                 },
             );
-            lingmo::Action::App(results)
+            cosmic::Action::App(results)
         })
     }
 
@@ -1348,13 +1348,13 @@ impl App {
                                             Message::UndoTrash(tid, paths.clone())
                                         }),
                                 )
-                                .map(lingmo::Action::App),
+                                .map(cosmic::Action::App),
                         );
                     } else {
                         commands.push(
                             self.toasts
                                 .push(widget::toaster::Toast::new(description))
-                                .map(lingmo::Action::App),
+                                .map(cosmic::Action::App),
                         );
                     }
                 }
@@ -1532,7 +1532,7 @@ impl App {
                         }
                     }
 
-                    lingmo::action::app(Message::TabRescan(
+                    cosmic::action::app(Message::TabRescan(
                         entity,
                         location,
                         parent_item_opt,
@@ -1542,7 +1542,7 @@ impl App {
                 }
                 Err(err) => {
                     log::warn!("failed to rescan: {err}");
-                    lingmo::action::none()
+                    cosmic::action::none()
                 }
             }
         })
@@ -1689,7 +1689,7 @@ impl App {
         // Tabs are collected first to placate the borrowck
         let tabs: Box<[_]> = self.tab_model.iter().collect();
         // Update main conf and each tab with the new config
-        let commands = std::iter::once(lingmo::command::set_theme(self.config.app_theme.theme()))
+        let commands = std::iter::once(cosmic::command::set_theme(self.config.app_theme.theme()))
             .chain(tabs.into_iter().map(|entity| {
                 self.update(Message::TabMessage(
                     Some(entity),
@@ -1877,7 +1877,7 @@ impl App {
                     })
                     .await
                     .unwrap();
-                    lingmo::action::app(Message::MaybeExit)
+                    cosmic::action::app(Message::MaybeExit)
                 });
             }
         }
@@ -2487,7 +2487,7 @@ impl Application for App {
                     |l| matches!(l, Location::Network(uri, ..) if *uri == *location.as_str()),
                 )
             }) {
-                commands.push(lingmo::task::message(lingmo::Action::App(
+                commands.push(cosmic::task::message(cosmic::Action::App(
                     Message::NetworkDriveOpenEntityAfterMount { entity: e },
                 )));
             }
@@ -2504,26 +2504,26 @@ impl Application for App {
         (app, Task::batch(commands))
     }
 
-    fn nav_bar(&self) -> Option<Element<'_, lingmo::Action<Self::Message>>> {
+    fn nav_bar(&self) -> Option<Element<'_, cosmic::Action<Self::Message>>> {
         if !self.core.nav_bar_active() {
             return None;
         }
 
         let nav_model = self.nav_model()?;
 
-        let mut nav = lingmo::widget::nav_bar(nav_model, |entity| {
-            lingmo::Action::Cosmic(lingmo::app::Action::NavBar(entity))
+        let mut nav = cosmic::widget::nav_bar(nav_model, |entity| {
+            cosmic::Action::Cosmic(cosmic::app::Action::NavBar(entity))
         })
         .drag_id(self.nav_drag_id)
-        .on_dnd_enter(|entity, _| lingmo::Action::App(Message::DndEnterNav(entity)))
-        .on_dnd_leave(|_| lingmo::Action::App(Message::DndExitNav))
+        .on_dnd_enter(|entity, _| cosmic::Action::App(Message::DndEnterNav(entity)))
+        .on_dnd_leave(|_| cosmic::Action::App(Message::DndExitNav))
         .on_dnd_drop(|entity, data, action| {
-            lingmo::Action::App(Message::DndDropNav(entity, data, action))
+            cosmic::Action::App(Message::DndDropNav(entity, data, action))
         })
-        .on_context(|entity| lingmo::Action::App(Message::NavBarContext(entity)))
-        .on_close(|entity| lingmo::Action::App(Message::NavBarClose(entity)))
+        .on_context(|entity| cosmic::Action::App(Message::NavBarContext(entity)))
+        .on_close(|entity| cosmic::Action::App(Message::NavBarClose(entity)))
         .on_middle_press(|entity| {
-            lingmo::Action::App(Message::NavMenuAction(NavMenuAction::OpenInNewTab(entity)))
+            cosmic::Action::App(Message::NavMenuAction(NavMenuAction::OpenInNewTab(entity)))
         })
         .context_menu(self.nav_context_menu())
         .close_icon(icon::from_name("media-eject-symbolic").size(16).icon());
@@ -2532,7 +2532,7 @@ impl Application for App {
         {
             nav = nav
                 .window_id_maybe(self.core().main_window_id())
-                .on_surface_action(|m| lingmo::Action::Cosmic(lingmo::app::Action::Surface(m)))
+                .on_surface_action(|m| cosmic::Action::Cosmic(cosmic::app::Action::Surface(m)))
         }
 
         let mut nav = nav.into_container();
@@ -2546,7 +2546,7 @@ impl Application for App {
         ))
     }
 
-    fn nav_context_menu(&self) -> Option<Vec<widget::menu::Tree<lingmo::Action<Self::Message>>>> {
+    fn nav_context_menu(&self) -> Option<Vec<widget::menu::Tree<cosmic::Action<Self::Message>>>> {
         let items = self.nav_model.iter().map(|entity| {
             let favorite_index_opt = self.nav_model.data::<FavoriteIndex>(entity);
             let location_opt = self.nav_model.data::<Location>(entity);
@@ -2557,23 +2557,23 @@ impl Application for App {
                 .and_then(Location::path_opt)
                 .is_some_and(|x| x.is_file())
             {
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("open"),
                     None,
                     NavMenuAction::Open(entity),
                 ));
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("menu-open-with"),
                     None,
                     NavMenuAction::OpenWith(entity),
                 ));
             } else {
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("open-in-new-tab"),
                     None,
                     NavMenuAction::OpenInNewTab(entity),
                 ));
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("open-in-new-window"),
                     None,
                     NavMenuAction::OpenInNewWindow(entity),
@@ -2588,7 +2588,7 @@ impl Application for App {
                     .enumerate()
                     .filter(|(_, action)| action.matches_selection(1, selected_dir))
                     .map(|(i, action)| {
-                        lingmo::widget::menu::Item::Button(
+                        cosmic::widget::menu::Item::Button(
                             action.name.clone(),
                             None,
                             NavMenuAction::RunContextAction(entity, i),
@@ -2597,21 +2597,21 @@ impl Application for App {
                     .collect();
 
                 if !action_items.is_empty() {
-                    items.push(lingmo::widget::menu::Item::Divider);
+                    items.push(cosmic::widget::menu::Item::Divider);
                     items.extend(action_items);
                 }
             }
-            items.push(lingmo::widget::menu::Item::Divider);
+            items.push(cosmic::widget::menu::Item::Divider);
             if matches!(location_opt, Some(Location::Path(..))) {
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("show-details"),
                     None,
                     NavMenuAction::Preview(entity),
                 ));
             }
-            items.push(lingmo::widget::menu::Item::Divider);
+            items.push(cosmic::widget::menu::Item::Divider);
             if favorite_index_opt.is_some() {
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("remove-from-sidebar"),
                     None,
                     NavMenuAction::RemoveFromSidebar(entity),
@@ -2619,7 +2619,7 @@ impl Application for App {
             }
 
             if matches!(location_opt, Some(Location::Recents)) && tab::has_recents() {
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("clear-recents-history"),
                     None,
                     NavMenuAction::ClearRecents,
@@ -2627,7 +2627,7 @@ impl Application for App {
             }
 
             if matches!(location_opt, Some(Location::Trash)) && !Trash::is_empty() {
-                items.push(lingmo::widget::menu::Item::Button(
+                items.push(cosmic::widget::menu::Item::Button(
                     fl!("empty-trash"),
                     None,
                     NavMenuAction::EmptyTrash,
@@ -2636,7 +2636,7 @@ impl Application for App {
             items
         });
 
-        Some(lingmo::widget::menu::nav_context(
+        Some(cosmic::widget::menu::nav_context(
             &HashMap::new(),
             items.collect(),
         ))
@@ -2680,11 +2680,11 @@ impl Application for App {
                     {
                         return mounter.network_drive(uri.clone()).map(move |mounted| {
                             if mounted {
-                                lingmo::Action::App(Message::NetworkDriveOpenEntityAfterMount {
+                                cosmic::Action::App(Message::NetworkDriveOpenEntityAfterMount {
                                     entity,
                                 })
                             } else {
-                                lingmo::action::none()
+                                cosmic::action::none()
                             }
                         });
                     }
@@ -2747,7 +2747,7 @@ impl Application for App {
         {
             return mounter
                 .mount(data.1.clone())
-                .map(|()| lingmo::action::none());
+                .map(|()| cosmic::action::none());
         }
         Task::none()
     }
@@ -2792,7 +2792,7 @@ impl Application for App {
         // of closing everything on one press
         if self.core.window.show_context {
             self.set_show_context(false);
-            return lingmo::task::message(lingmo::action::app(Message::SetShowDetails(false)));
+            return cosmic::task::message(cosmic::action::app(Message::SetShowDetails(false)));
         }
         if let Some(tab) = self.tab_model.data_mut::<Tab>(entity) {
             if tab.location_context_menu_index.is_some() {
@@ -3079,7 +3079,7 @@ impl Application for App {
                 let (id, command) = window::open(settings);
                 self.windows
                     .insert(id, Window::new(WindowKind::DesktopViewOptions));
-                return command.map(|_id| lingmo::action::none());
+                return command.map(|_id| cosmic::action::none());
             }
             Message::DesktopDialogs(show) => {
                 if matches!(self.mode, Mode::Desktop) {
@@ -3107,7 +3107,7 @@ impl Application for App {
                         let (id, command) = window::open(settings);
                         self.windows
                             .insert(id, Window::new(WindowKind::Dialogs(widget::Id::unique())));
-                        return command.map(|_id| lingmo::Action::None);
+                        return command.map(|_id| cosmic::Action::None);
                     }
 
                     let tasks = self
@@ -3171,7 +3171,7 @@ impl Application for App {
                             error: _,
                         } => {
                             if let Some(mounter) = MOUNTERS.get(&mounter_key) {
-                                tasks.push(mounter.mount(item).map(|()| lingmo::action::none()));
+                                tasks.push(mounter.mount(item).map(|()| cosmic::action::none()));
                             }
                         }
                         DialogPage::NetworkAuth {
@@ -3182,7 +3182,7 @@ impl Application for App {
                         } => {
                             tasks.push(Task::future(async move {
                                 auth_tx.send(auth).await.unwrap();
-                                lingmo::action::none()
+                                cosmic::action::none()
                             }));
                         }
                         DialogPage::NetworkError {
@@ -3590,7 +3590,7 @@ impl Application for App {
                         Some((*mounter_key, self.network_drive_input.clone()));
                     return mounter
                         .network_drive(self.network_drive_input.clone())
-                        .map(|_| lingmo::action::none());
+                        .map(|_| cosmic::action::none());
                 }
                 log::warn!(
                     "no mounter found for connecting to {:?}",
@@ -3878,11 +3878,11 @@ impl Application for App {
                                 .chain(
                                     clipboard::read_data::<ClipboardPaste>().map(
                                         move |contents_opt| match contents_opt {
-                                            Some(contents) => lingmo::action::app(
+                                            Some(contents) => cosmic::action::app(
                                                 Message::PasteContents(to.clone(), contents),
                                             ),
                                             None => {
-                                                lingmo::action::app(Message::PasteImage(to.clone()))
+                                                cosmic::action::app(Message::PasteImage(to.clone()))
                                             }
                                         },
                                     ),
@@ -3908,11 +3908,11 @@ impl Application for App {
                             // (works when triggered from main window, e.g., Ctrl+V)
                             return clipboard::read_data::<ClipboardPaste>().map(
                                 move |contents_opt| match contents_opt {
-                                    Some(contents) => lingmo::action::app(Message::PasteContents(
+                                    Some(contents) => cosmic::action::app(Message::PasteContents(
                                         to.clone(),
                                         contents,
                                     )),
-                                    None => lingmo::action::app(Message::PasteImage(to.clone())),
+                                    None => cosmic::action::app(Message::PasteImage(to.clone())),
                                 },
                             );
                         }
@@ -3939,10 +3939,10 @@ impl Application for App {
                 return clipboard::read_data::<ClipboardPasteImage>().map(move |contents_opt| {
                     match contents_opt {
                         Some(contents) => {
-                            lingmo::action::app(Message::PasteImageContents(to.clone(), contents))
+                            cosmic::action::app(Message::PasteImageContents(to.clone(), contents))
                         }
                         // No image data in clipboard, try video data
-                        None => lingmo::action::app(Message::PasteVideo(to.clone())),
+                        None => cosmic::action::app(Message::PasteVideo(to.clone())),
                     }
                 });
             }
@@ -3974,10 +3974,10 @@ impl Application for App {
                 return clipboard::read_data::<ClipboardPasteVideo>().map(move |contents_opt| {
                     match contents_opt {
                         Some(contents) => {
-                            lingmo::action::app(Message::PasteVideoContents(to.clone(), contents))
+                            cosmic::action::app(Message::PasteVideoContents(to.clone(), contents))
                         }
                         // No video data in clipboard, try text data
-                        None => lingmo::action::app(Message::PasteText(to.clone())),
+                        None => cosmic::action::app(Message::PasteText(to.clone())),
                     }
                 });
             }
@@ -4009,9 +4009,9 @@ impl Application for App {
                 return clipboard::read_data::<ClipboardPasteText>().map(move |contents_opt| {
                     match contents_opt {
                         Some(contents) => {
-                            lingmo::action::app(Message::PasteTextContents(to.clone(), contents))
+                            cosmic::action::app(Message::PasteTextContents(to.clone(), contents))
                         }
-                        None => lingmo::action::none(),
+                        None => cosmic::action::none(),
                     }
                 });
             }
@@ -4035,39 +4035,39 @@ impl Application for App {
                 // Check if clipboard has any paste-able content and cache it
                 return clipboard::read_data::<ClipboardPaste>().map(|contents_opt| {
                     match contents_opt {
-                        Some(contents) if contents.paths.is_empty() => lingmo::action::app(
+                        Some(contents) if contents.paths.is_empty() => cosmic::action::app(
                             Message::RetryCheckClipboard(ClipboardCache::Files(contents)),
                         ),
-                        Some(contents) => lingmo::action::app(Message::ClipboardCached(
+                        Some(contents) => cosmic::action::app(Message::ClipboardCached(
                             ClipboardCache::Files(contents),
                         )),
-                        _ => lingmo::action::app(Message::CheckClipboardImage),
+                        _ => cosmic::action::app(Message::CheckClipboardImage),
                     }
                 });
             }
             Message::CheckClipboardImage => {
                 return clipboard::read_data::<ClipboardPasteImage>().map(|contents_opt| {
                     match contents_opt {
-                        Some(contents) => lingmo::action::app(Message::ClipboardCached(
+                        Some(contents) => cosmic::action::app(Message::ClipboardCached(
                             ClipboardCache::Image(contents),
                         )),
-                        None => lingmo::action::app(Message::CheckClipboardVideo),
+                        None => cosmic::action::app(Message::CheckClipboardVideo),
                     }
                 });
             }
             Message::CheckClipboardVideo => {
                 return clipboard::read_data::<ClipboardPasteVideo>().map(|contents_opt| {
                     match contents_opt {
-                        Some(contents) => lingmo::action::app(Message::ClipboardCached(
+                        Some(contents) => cosmic::action::app(Message::ClipboardCached(
                             ClipboardCache::Video(contents),
                         )),
-                        None => lingmo::action::app(Message::CheckClipboardText),
+                        None => cosmic::action::app(Message::CheckClipboardText),
                     }
                 });
             }
             Message::CheckClipboardText => {
                 return clipboard::read_data::<ClipboardPasteText>().map(|contents_opt| {
-                    lingmo::action::app(Message::ClipboardCached(match contents_opt {
+                    cosmic::action::app(Message::ClipboardCached(match contents_opt {
                         Some(contents) => ClipboardCache::Text(contents),
                         None => ClipboardCache::Empty,
                     }))
@@ -4084,11 +4084,11 @@ impl Application for App {
                             clipboard::read_data::<ClipboardPaste>().map(|contents_opt| {
                                 match contents_opt {
                                     Some(contents) if !contents.paths.is_empty() => {
-                                        lingmo::action::app(Message::ClipboardCached(
+                                        cosmic::action::app(Message::ClipboardCached(
                                             ClipboardCache::Files(contents),
                                         ))
                                     }
-                                    _ => lingmo::action::app(Message::CheckClipboardImage),
+                                    _ => cosmic::action::app(Message::CheckClipboardImage),
                                 }
                             }),
                         ),
@@ -4158,7 +4158,7 @@ impl Application for App {
                         let show_details = !self.config.show_details;
                         self.context_page = ContextPage::Preview(None, PreviewKind::Selected);
                         self.core.window.show_context = show_details;
-                        return lingmo::task::message(Message::SetShowDetails(show_details));
+                        return cosmic::task::message(Message::SetShowDetails(show_details));
                     }
                     Mode::Desktop => {
                         let preview_kind = {
@@ -4196,7 +4196,7 @@ impl Application for App {
                             );
                             return Task::batch([
                                 self.update_desktop(), // Force re-calculating of directory sizes
-                                command.map(|_id| lingmo::action::none()),
+                                command.map(|_id| cosmic::action::none()),
                             ]);
                         }
                     }
@@ -4277,7 +4277,7 @@ impl Application for App {
                         DialogPage::Replace { tx, .. } => {
                             return Task::future(async move {
                                 let _ = tx.send(replace_result).await;
-                                lingmo::action::none()
+                                cosmic::action::none()
                             });
                         }
                         other => {
@@ -4407,7 +4407,7 @@ impl Application for App {
                 // Otherwise, activate closest item
                 if self.tab_model.len() == 1 {
                     tasks.push(Task::future(async move {
-                        lingmo::action::app(Message::WindowClose)
+                        cosmic::action::app(Message::WindowClose)
                     }));
                 } else if let Some(position) = self.tab_model.position(entity) {
                     let new_position = if position > 0 {
@@ -4500,7 +4500,7 @@ impl Application for App {
                                     use cctk::wayland_protocols::xdg::shell::client::xdg_positioner::{
                                         Anchor, Gravity,
                                     };
-                                    use lingmo::{iced::runtime::platform_specific::wayland::popup::{
+                                    use cosmic::{iced::runtime::platform_specific::wayland::popup::{
                                         SctkPopupSettings, SctkPositioner,
                                     }, widget::menu::StyleSheet as _};
 
@@ -4515,14 +4515,14 @@ impl Application for App {
                                     commands.push(self.update(Message::CheckClipboard));
                                     let t = self.core.system_theme();
                                     let styling = t.appearance(
-                                        &lingmo::theme::menu_bar::MenuBarStyle::Default,
+                                        &cosmic::theme::menu_bar::MenuBarStyle::Default,
                                         false,
                                     );
                                     let rad = styling.menu_border_radius;
 
                                     commands.push(self.update(Message::Surface(
-                                        lingmo::surface::action::app_popup(
-                                        move |_| lingmo::surface::action::LiveSettings {
+                                        cosmic::surface::action::app_popup(
+                                        move |_| cosmic::surface::action::LiveSettings {
                                                     corners: Some(iced::runtime::platform_specific::wayland::CornerRadius {
                                                         top_left: rad[0] as u32,
                                                         top_right: rad[1] as u32,
@@ -4575,7 +4575,7 @@ impl Application for App {
                                 }
                                 for window_id in window_ids {
                                     commands.push(self.update(Message::Surface(
-                                        lingmo::surface::action::destroy_popup(window_id),
+                                        cosmic::surface::action::destroy_popup(window_id),
                                     )));
                                 }
                             }
@@ -4623,7 +4623,7 @@ impl Application for App {
                         }
                         tab::Command::Iced(iced_command) => {
                             commands.push(iced_command.0.map(move |x| {
-                                lingmo::action::app(Message::TabMessage(Some(entity), x))
+                                cosmic::action::app(Message::TabMessage(Some(entity), x))
                             }));
                         }
                         tab::Command::OpenFile(paths) => commands.push(self.open_file(&paths)),
@@ -4718,9 +4718,9 @@ impl Application for App {
 
                             if !self.must_save_sort_names & changed {
                                 self.must_save_sort_names = true;
-                                return lingmo::Task::future(async move {
+                                return cosmic::Task::future(async move {
                                     tokio::time::sleep(Duration::from_secs(1)).await;
-                                    lingmo::action::app(Message::SaveSortNames)
+                                    cosmic::action::app(Message::SaveSortNames)
                                 });
                             }
                         }
@@ -4760,14 +4760,14 @@ impl Application for App {
                             tab.select_paths(selection_paths);
 
                             // Ensure selected path is scrolled to after redraw
-                            tasks.push(Task::done(lingmo::action::app(Message::TabMessage(
+                            tasks.push(Task::done(cosmic::action::app(Message::TabMessage(
                                 Some(entity),
                                 tab::Message::ScrollToFocused,
                             ))));
                         }
 
                         tasks.push(clipboard::read_data::<ClipboardPaste>().map(|p| {
-                            lingmo::action::app(Message::CutPaths(match p {
+                            cosmic::action::app(Message::CutPaths(match p {
                                 Some(s) => match s.kind {
                                     ClipboardKind::Copy => Vec::new(),
                                     ClipboardKind::Cut { .. } => s.paths,
@@ -4814,7 +4814,7 @@ impl Application for App {
                 self.context_page = context_page;
                 // Preview status is preserved across restarts
                 if matches!(self.context_page, ContextPage::Preview(_, _)) {
-                    return lingmo::task::message(lingmo::action::app(Message::SetShowDetails(
+                    return cosmic::task::message(cosmic::action::app(Message::SetShowDetails(
                         self.core.window.show_context,
                     )));
                 }
@@ -4828,7 +4828,7 @@ impl Application for App {
                 let mut paths = Vec::with_capacity(recently_trashed.len());
                 let icon_sizes = self.config.tab.icon_sizes;
 
-                return lingmo::task::future(async move {
+                return cosmic::task::future(async move {
                     match tokio::task::spawn_blocking(move || Location::Trash.scan(icon_sizes))
                         .await
                     {
@@ -4860,7 +4860,7 @@ impl Application for App {
                     self.core.set_main_window_id(None);
                     return Task::batch([
                         window::close(window_id),
-                        Task::future(async move { lingmo::action::app(Message::MaybeExit) }),
+                        Task::future(async move { cosmic::action::app(Message::MaybeExit) }),
                     ]);
                 }
             }
@@ -4941,7 +4941,7 @@ impl Application for App {
                     self.nav_dnd_hover = Some((location.clone(), Instant::now()));
                     let location = location.clone();
                     return Task::perform(tokio::time::sleep(HOVER_DURATION), move |()| {
-                        lingmo::Action::App(Message::DndHoverLocTimeout(location.clone()))
+                        cosmic::Action::App(Message::DndHoverLocTimeout(location.clone()))
                     });
                 }
             }
@@ -5003,7 +5003,7 @@ impl Application for App {
                 if mimes.iter().all(|m| m.as_str() != "x-cosmic-files/tab-dnd") {
                     self.tab_dnd_hover = Some((entity, Instant::now()));
                     return Task::perform(tokio::time::sleep(HOVER_DURATION), move |()| {
-                        lingmo::Action::App(Message::DndHoverTabTimeout(entity))
+                        cosmic::Action::App(Message::DndHoverTabTimeout(entity))
                     });
                 }
             }
@@ -5055,7 +5055,7 @@ impl Application for App {
                 {
                     return mounter
                         .unmount(data.1.clone())
-                        .map(|()| lingmo::action::none());
+                        .map(|()| cosmic::action::none());
                 }
             }
             Message::NavBarContext(entity) => {
@@ -5067,7 +5067,7 @@ impl Application for App {
                     tab.edit_location = None;
                     // Close other context menus.
                     tab.location_context_menu_index = None;
-                    return Task::done(lingmo::Action::App(Message::TabMessage(
+                    return Task::done(cosmic::Action::App(Message::TabMessage(
                         Some(tab_entity),
                         tab::Message::ContextMenu(None, None),
                     )));
@@ -5299,9 +5299,9 @@ impl Application for App {
                             .insert(surface_id, Window::new(WindowKind::Desktop(entity)));
                         return Task::batch([
                             command,
-                            lingmo::task::message(lingmo::action::cosmic(
-                                lingmo::app::Action::Surface(
-                                    lingmo::surface::action::app_layer_shell(
+                            cosmic::task::message(cosmic::action::cosmic(
+                                cosmic::app::Action::Surface(
+                                    cosmic::surface::action::app_layer_shell(
                                         |_| Default::default(),
                                         move |_: &mut App| SctkLayerSurfaceSettings {
                                             id: surface_id,
@@ -5354,7 +5354,7 @@ impl Application for App {
             }
             Message::Cosmic(cosmic) => {
                 // Forward cosmic messages
-                return Task::perform(async move { cosmic }, lingmo::action::cosmic);
+                return Task::perform(async move { cosmic }, cosmic::action::cosmic);
             }
             Message::None => {}
             #[cfg(all(feature = "wayland", feature = "desktop-applet"))]
@@ -5399,7 +5399,7 @@ impl Application for App {
                                 {
                                     return mounter
                                         .unmount(item.clone())
-                                        .map(|()| lingmo::action::none());
+                                        .map(|()| cosmic::action::none());
                                 }
                             }
                         }
@@ -5416,14 +5416,14 @@ impl Application for App {
                 }
                 // Check clipboard when window gains focus
                 // HACK: Wait a moment for the data to be available.
-                return lingmo::task::future(async {
+                return cosmic::task::future(async {
                     _ = tokio::time::sleep(Duration::from_millis(300)).await;
-                    lingmo::action::app(Message::CheckClipboard)
+                    cosmic::action::app(Message::CheckClipboard)
                 });
             }
             Message::Surface(action) => {
-                return lingmo::task::message(lingmo::Action::Cosmic(
-                    lingmo::app::Action::Surface(action),
+                return cosmic::task::message(cosmic::Action::Cosmic(
+                    cosmic::app::Action::Surface(action),
                 ));
             }
             Message::SaveSortNames => {
@@ -6525,7 +6525,7 @@ impl Application for App {
         let content: Element<_> = tab_column.into();
 
         // Uncomment to debug layout:
-        //content.explain(lingmo::iced::Color::WHITE)
+        //content.explain(cosmic::iced::Color::WHITE)
         content
     }
 
@@ -6606,9 +6606,9 @@ impl Application for App {
             None => {
                 //TODO: distinct views per monitor in desktop mode
                 return self.view_main().map(|message| match message {
-                    lingmo::Action::App(app) => app,
-                    lingmo::Action::Cosmic(cosmic) => Message::Cosmic(cosmic),
-                    lingmo::Action::None => Message::None,
+                    cosmic::Action::App(app) => app,
+                    cosmic::Action::Cosmic(cosmic) => Message::Cosmic(cosmic),
+                    cosmic::Action::None => Message::None,
                 });
             }
         };
@@ -6626,7 +6626,7 @@ impl Application for App {
     fn system_theme_update(
         &mut self,
         _keys: &[&'static str],
-        _new_theme: &lingmo::cosmic_theme::Theme,
+        _new_theme: &cosmic::cosmic_theme::Theme,
     ) -> Task<Self::Message> {
         self.update(Message::SystemThemeModeChange)
     }
@@ -6981,7 +6981,7 @@ impl Application for App {
                     .any(|(_, controller)| !controller.is_paused())
                 {
                     subscriptions.push(
-                        lingmo::iced::time::every(Duration::from_millis(100))
+                        cosmic::iced::time::every(Duration::from_millis(100))
                             .map(|_| Message::None),
                     );
                 }

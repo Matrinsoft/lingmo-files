@@ -1,7 +1,7 @@
 // Copyright 2024 System76 <info@system76.com>
 // SPDX-License-Identifier: GPL-3.0-only
 
-use lingmo::iced::clipboard::mime::{AllowedMimeTypes, AsMimeTypes};
+use cosmic::iced::clipboard::mime::{AllowedMimeTypes, AsMimeTypes};
 use std::borrow::Cow;
 use std::error::Error;
 use std::path::{Path, PathBuf};

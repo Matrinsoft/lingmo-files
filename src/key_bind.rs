@@ -1,6 +1,6 @@
-use lingmo::iced::core::keyboard::key::Named;
-use lingmo::iced::keyboard::Key;
-use lingmo::widget::menu::key_bind::{KeyBind, Modifier};
+use cosmic::iced::core::keyboard::key::Named;
+use cosmic::iced::keyboard::Key;
+use cosmic::widget::menu::key_bind::{KeyBind, Modifier};
 use std::collections::HashMap;
 
 use crate::app::Action;

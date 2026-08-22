@@ -1,4 +1,4 @@
-use lingmo::widget;
+use cosmic::widget;
 use image::ImageReader;
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};

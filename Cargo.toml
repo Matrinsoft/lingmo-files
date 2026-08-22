@@ -150,12 +150,12 @@ tokio = { version = "1", features = ["rt", "macros"] }
 # cosmic-text = { path = "../cosmic-text" }
 
 # [patch.'https://github.com/Matrinsoft/liblingmo']
-# liblingmo = { path = "../libcosmic" }
+# libcosmic = { path = "../libcosmic" }
 # cosmic-config = { path = "../libcosmic/cosmic-config" }
 # cosmic-theme = { path = "../libcosmic/cosmic-theme" }
-# liblingmo = { git = "https://github.com/Matrinsoft/liblingmo//", branch = "theme-v2" }
-# cosmic-config = { git = "https://github.com/Matrinsoft/liblingmo//", branch = "theme-v2" }
-# cosmic-theme = { git = "https://github.com/Matrinsoft/liblingmo//", branch = "theme-v2" }
+# libcosmic = { git = "https://github.com/Matrinsoft/libcosmic//", branch = "theme-v2" }
+# cosmic-config = { git = "https://github.com/Matrinsoft/libcosmic//", branch = "theme-v2" }
+# cosmic-theme = { git = "https://github.com/Matrinsoft/libcosmic//", branch = "theme-v2" }
 
 
 # [patch.'https://github.com/Matrinsoft/smithay-clipboard']

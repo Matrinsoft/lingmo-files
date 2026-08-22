@@ -1,5 +1,5 @@
-use lingmo::iced::Subscription;
-use lingmo::{Task, widget};
+use cosmic::iced::Subscription;
+use cosmic::{Task, widget};
 use std::collections::BTreeMap;
 use std::fmt;
 use std::path::PathBuf;

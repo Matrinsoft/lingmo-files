@@ -1,4 +1,4 @@
-use lingmo::widget;
+use cosmic::widget;
 use regex::Regex;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};

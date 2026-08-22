@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-use lingmo::widget::icon;
+use cosmic::widget::icon;
 use mime_guess::Mime;
 use rustc_hash::FxHashMap;
 use std::fs;

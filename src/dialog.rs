@@ -1,23 +1,23 @@
 // Copyright 2023 System76 <info@system76.com>
 // SPDX-License-Identifier: GPL-3.0-only
 
-use lingmo::app::lingmo::Cosmic;
-use lingmo::app::{Core, Task, context_drawer};
-use lingmo::iced::core::SmolStr;
-use lingmo::iced::core::widget::operation;
-use lingmo::iced::futures::{self, SinkExt};
-use lingmo::iced::keyboard::key::{Named, Physical};
-use lingmo::iced::keyboard::{Event as KeyEvent, Key, Modifiers};
-use lingmo::iced::platform_specific::shell::{self as iced_winit, SurfaceIdWrapper};
-use lingmo::iced::widget::scrollable;
-use lingmo::iced::widget::scrollable::AbsoluteOffset;
-use lingmo::iced::{
+use cosmic::app::cosmic::Cosmic;
+use cosmic::app::{Core, Task, context_drawer};
+use cosmic::iced::core::SmolStr;
+use cosmic::iced::core::widget::operation;
+use cosmic::iced::futures::{self, SinkExt};
+use cosmic::iced::keyboard::key::{Named, Physical};
+use cosmic::iced::keyboard::{Event as KeyEvent, Key, Modifiers};
+use cosmic::iced::platform_specific::shell::{self as iced_winit, SurfaceIdWrapper};
+use cosmic::iced::widget::scrollable;
+use cosmic::iced::widget::scrollable::AbsoluteOffset;
+use cosmic::iced::{
     self, Alignment, Event, Length, Size, Subscription, event, mouse, stream, window,
 };
-use lingmo::widget::menu::key_bind::Modifier;
-use lingmo::widget::menu::{Action as MenuAction, KeyBind};
-use lingmo::widget::{self, Operation, segmented_button};
-use lingmo::{Application, ApplicationExt, Element, cosmic_config, cosmic_theme, executor, theme};
+use cosmic::widget::menu::key_bind::Modifier;
+use cosmic::widget::menu::{Action as MenuAction, KeyBind};
+use cosmic::widget::{self, Operation, segmented_button};
+use cosmic::{Application, ApplicationExt, Element, cosmic_config, cosmic_theme, executor, theme};
 use mime_guess::{Mime, mime};
 use notify_debouncer_full::notify::{self, RecommendedWatcher};
 use notify_debouncer_full::{DebouncedEvent, Debouncer, RecommendedCache, new_debouncer};
@@ -43,7 +43,7 @@ use crate::zoom::{zoom_in_view, zoom_out_view, zoom_to_default};
 use crate::{fl, home_dir, menu, mime_icon};
 
 #[derive(Clone, Debug)]
-pub struct DialogMessage(lingmo::Action<Message>);
+pub struct DialogMessage(cosmic::Action<Message>);
 
 #[derive(Clone, Debug)]
 pub enum DialogResult {
@@ -191,12 +191,12 @@ impl<T: AsRef<str>> From<T> for DialogLabel {
 
 impl<'a, M: Clone + 'static> From<&'a DialogLabel> for Element<'a, M> {
     fn from(label: &'a DialogLabel) -> Self {
-        let mut iced_spans: Vec<lingmo::iced::core::text::Span<'_, ()>> =
+        let mut iced_spans: Vec<cosmic::iced::core::text::Span<'_, ()>> =
             Vec::with_capacity(label.spans.len());
         for span in &label.spans {
-            iced_spans.push(lingmo::iced::widget::span(&span.text).underline(span.underline));
+            iced_spans.push(cosmic::iced::widget::span(&span.text).underline(span.underline));
         }
-        lingmo::iced::widget::rich_text(iced_spans).into()
+        cosmic::iced::widget::rich_text(iced_spans).into()
     }
 }
 
@@ -289,7 +289,7 @@ impl<M: Send + 'static> Dialog<M> {
             config,
         };
 
-        let (cosmic, cosmic_command) = lingmo::<App>::init((core, flags));
+        let (cosmic, cosmic_command) = cosmic::<App>::init((core, flags));
         (
             Self {
                 cosmic,
@@ -297,10 +297,10 @@ impl<M: Send + 'static> Dialog<M> {
                 on_result: Box::new(on_result),
             },
             Task::batch([
-                window_command.map(|_id| lingmo::action::none()),
+                window_command.map(|_id| cosmic::action::none()),
                 cosmic_command
                     .map(DialogMessage)
-                    .map(move |message| lingmo::action::app(mapper(message))),
+                    .map(move |message| cosmic::action::app(mapper(message))),
             ]),
         )
     }
@@ -312,7 +312,7 @@ impl<M: Send + 'static> Dialog<M> {
             .app
             .update_title()
             .map(DialogMessage)
-            .map(move |message| lingmo::action::app(mapper(message)))
+            .map(move |message| cosmic::action::app(mapper(message)))
     }
 
     pub fn set_accept_label(&mut self, accept_label: impl AsRef<str>) {
@@ -343,7 +343,7 @@ impl<M: Send + 'static> Dialog<M> {
             .app
             .rescan_tab(None)
             .map(DialogMessage)
-            .map(move |message| lingmo::action::app(mapper(message)))
+            .map(move |message| cosmic::action::app(mapper(message)))
     }
 
     pub fn subscription(&self) -> Subscription<M> {
@@ -360,7 +360,7 @@ impl<M: Send + 'static> Dialog<M> {
             .cosmic
             .update(message.0)
             .map(DialogMessage)
-            .map(move |message| lingmo::action::app(mapper(message)));
+            .map(move |message| cosmic::action::app(mapper(message)));
         if let Some(result) = self.cosmic.app.result_opt.take() {
             #[cfg(feature = "wayland")]
             if !self.cosmic.surface_views.is_empty() {
@@ -394,7 +394,7 @@ impl<M: Send + 'static> Dialog<M> {
                 let on_result_message = (self.on_result)(result);
 
                 tasks.push(Task::future(async move {
-                    lingmo::action::app(on_result_message)
+                    cosmic::action::app(on_result_message)
                 }));
                 tasks.push(command);
                 return Task::batch(tasks);
@@ -403,7 +403,7 @@ impl<M: Send + 'static> Dialog<M> {
 
             Task::batch([
                 command,
-                Task::future(async move { lingmo::action::app(on_result_message) }),
+                Task::future(async move { cosmic::action::app(on_result_message) }),
             ])
         } else {
             command
@@ -470,7 +470,7 @@ enum Message {
     SearchActivate,
     SearchClear,
     SearchInput(String),
-    Surface(lingmo::surface::Action),
+    Surface(cosmic::surface::Action),
     #[allow(clippy::enum_variant_names)]
     TabMessage(tab::Message),
     TabRescan(
@@ -751,7 +751,7 @@ impl App {
                             }
                         }
                     }
-                    lingmo::action::app(Message::TabRescan(
+                    cosmic::action::app(Message::TabRescan(
                         location,
                         parent_item_opt,
                         items,
@@ -760,7 +760,7 @@ impl App {
                 }
                 Err(err) => {
                     log::warn!("failed to rescan: {err}");
-                    lingmo::action::none()
+                    cosmic::action::none()
                 }
             }
         })
@@ -1267,17 +1267,17 @@ impl Application for App {
         elements
     }
 
-    fn nav_bar(&self) -> Option<Element<'_, lingmo::Action<Self::Message>>> {
+    fn nav_bar(&self) -> Option<Element<'_, cosmic::Action<Self::Message>>> {
         if !self.core().nav_bar_active() {
             return None;
         }
 
         let nav_model = self.nav_model()?;
 
-        let mut nav = lingmo::widget::nav_bar(nav_model, |entity| {
-            lingmo::action::cosmic(lingmo::app::Action::NavBar(entity))
+        let mut nav = cosmic::widget::nav_bar(nav_model, |entity| {
+            cosmic::action::cosmic(cosmic::app::Action::NavBar(entity))
         })
-        //TODO .on_close(|entity| lingmo::lingmo::action::app(Message::NavBarClose(entity)))
+        //TODO .on_close(|entity| cosmic::cosmic::action::app(Message::NavBarClose(entity)))
         .close_icon(
             widget::icon::from_name("media-eject-symbolic")
                 .size(16)
@@ -1315,7 +1315,7 @@ impl Application for App {
         {
             return mounter
                 .mount(data.1.clone())
-                .map(|()| lingmo::action::none());
+                .map(|()| cosmic::action::none());
         }
         Task::none()
     }
@@ -1786,24 +1786,24 @@ impl Application for App {
                                         use cctk::wayland_protocols::xdg::shell::client::xdg_positioner::{
                                             Anchor, Gravity,
                                         };
-                                        use lingmo::iced::runtime::platform_specific::wayland::popup::{
+                                        use cosmic::iced::runtime::platform_specific::wayland::popup::{
                                             SctkPopupSettings, SctkPositioner,
                                         };
-                                        use lingmo::iced::Rectangle;
-                                        use lingmo::widget::menu::StyleSheet as _;
+                                        use cosmic::iced::Rectangle;
+                                        use cosmic::widget::menu::StyleSheet as _;
 
                                         let window_id = window::Id::unique();
                                         self.context_menu_window = Some(window_id);
                                         let autosize_id = widget::Id::unique();
                                         let t = self.core.system_theme();
                                         let styling = t.appearance(
-                                            &lingmo::theme::menu_bar::MenuBarStyle::Default,
+                                            &cosmic::theme::menu_bar::MenuBarStyle::Default,
                                             false,
                                         );
                                         let rad = styling.menu_border_radius;
                                         commands.push(self.update(Message::Surface(
-                                            lingmo::surface::action::app_popup(
-                                                move |_| lingmo::surface::action::LiveSettings {
+                                            cosmic::surface::action::app_popup(
+                                                move |_| cosmic::surface::action::LiveSettings {
                                                     corners: Some(iced::runtime::platform_specific::wayland::CornerRadius {
                                                         top_left: rad[0] as u32,
                                                         top_right: rad[1] as u32,
@@ -1848,7 +1848,7 @@ impl Application for App {
                                                             &app.flags.config.context_actions,
                                                         )
                                                         .map(Message::TabMessage)
-                                                        .map(lingmo::Action::App),
+                                                        .map(cosmic::Action::App),
                                                         autosize_id.clone(),
                                                     )
                                                     .into()
@@ -1860,7 +1860,7 @@ impl Application for App {
                                 None => {
                                     if let Some(window_id) = self.context_menu_window.take() {
                                         commands.push(self.update(Message::Surface(
-                                            lingmo::surface::action::destroy_popup(window_id),
+                                            cosmic::surface::action::destroy_popup(window_id),
                                         )));
                                     }
                                 }
@@ -1868,7 +1868,7 @@ impl Application for App {
                         }
                         tab::Command::Iced(iced_command) => {
                             commands.push(iced_command.0.map(|tab_message| {
-                                lingmo::action::app(Message::TabMessage(tab_message))
+                                cosmic::action::app(Message::TabMessage(tab_message))
                             }));
                         }
                         tab::Command::OpenFile(_item_path) => {
@@ -2019,8 +2019,8 @@ impl Application for App {
                 });
             }
             Message::Surface(action) => {
-                return lingmo::task::message(lingmo::Action::Cosmic(
-                    lingmo::app::Action::Surface(action),
+                return cosmic::task::message(cosmic::Action::Cosmic(
+                    cosmic::app::Action::Surface(action),
                 ));
             }
         }

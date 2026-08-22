@@ -1,8 +1,8 @@
 // Copyright 2023 System76 <info@system76.com>
 // SPDX-License-Identifier: GPL-3.0-only
 
-use lingmo::app::Settings;
-use lingmo::iced::Limits;
+use cosmic::app::Settings;
+use cosmic::iced::Limits;
 use std::path::PathBuf;
 use std::{env, fs, process};
 use tracing_subscriber::layer::SubscriberExt;
@@ -70,8 +70,8 @@ pub fn home_dir() -> PathBuf {
 
 pub fn is_wayland() -> bool {
     matches!(
-        lingmo::app::lingmo::windowing_system(),
-        Some(lingmo::app::lingmo::WindowingSystem::Wayland)
+        cosmic::app::cosmic::windowing_system(),
+        Some(cosmic::app::cosmic::WindowingSystem::Wayland)
     )
 }
 
@@ -120,7 +120,7 @@ pub fn desktop() -> Result<(), Box<dyn std::error::Error>> {
         locations,
         uris: Vec::new()
     };
-    lingmo::app::run::<App>(settings, flags)?;
+    cosmic::app::run::<App>(settings, flags)?;
 
     Ok(())
 }
@@ -222,7 +222,7 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
         locations,
         uris
     };
-    lingmo::app::run::<App>(settings, flags)?;
+    cosmic::app::run::<App>(settings, flags)?;
 
     Ok(())
 }

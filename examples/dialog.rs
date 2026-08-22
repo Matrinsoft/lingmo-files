@@ -1,6 +1,6 @@
-use lingmo::app::{self, Core, Settings, Task};
-use lingmo::iced::{Subscription, window};
-use lingmo::{Application, Element, executor, widget};
+use cosmic::app::{self, Core, Settings, Task};
+use cosmic::iced::{Subscription, window};
+use cosmic::{Application, Element, executor, widget};
 use cosmic_files::dialog::{
     Dialog, DialogChoice, DialogChoiceOption, DialogFilter, DialogFilterPattern, DialogKind,
     DialogMessage, DialogResult, DialogSettings,

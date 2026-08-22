@@ -3,17 +3,17 @@
 use std::time::Instant;
 
 use crate::tab::DOUBLE_CLICK_DURATION;
-use lingmo::iced::core::border::Border;
-use lingmo::iced::core::event::Event;
-use lingmo::iced::core::mouse::{self, click};
-use lingmo::iced::core::renderer::{self, Quad, Renderer as _};
-use lingmo::iced::core::widget::{Operation, Tree, tree};
-use lingmo::iced::core::{
+use cosmic::iced::core::border::Border;
+use cosmic::iced::core::event::Event;
+use cosmic::iced::core::mouse::{self, click};
+use cosmic::iced::core::renderer::{self, Quad, Renderer as _};
+use cosmic::iced::core::widget::{Operation, Tree, tree};
+use cosmic::iced::core::{
     Clipboard, Color, Layout, Length, Point, Rectangle, Shell, Size, Vector, Widget, layout,
     overlay, touch,
 };
-use lingmo::widget::Id;
-use lingmo::{Element, Renderer, Theme};
+use cosmic::widget::Id;
+use cosmic::{Element, Renderer, Theme};
 
 /// Emit messages on mouse events.
 #[allow(missing_debug_implementations)]
@@ -484,7 +484,7 @@ where
         state: &Tree,
         layout: Layout<'_>,
         renderer: &Renderer,
-        dnd_rectangles: &mut lingmo::iced::core::clipboard::DndDestinationRectangles,
+        dnd_rectangles: &mut cosmic::iced::core::clipboard::DndDestinationRectangles,
     ) {
         self.content.as_widget().drag_destinations(
             &state.children[0],

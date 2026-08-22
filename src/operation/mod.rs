@@ -2,8 +2,8 @@ use crate::app::{ArchiveType, DialogPage, Message, REPLACE_BUTTON_ID};
 use crate::config::IconSizes;
 use crate::spawn_detached::spawn_detached;
 use crate::{archive, fl, tab};
-use lingmo::iced::futures::channel::mpsc::Sender;
-use lingmo::iced::futures::{self, SinkExt, StreamExt, stream};
+use cosmic::iced::futures::channel::mpsc::Sender;
+use cosmic::iced::futures::{self, SinkExt, StreamExt, stream};
 use std::borrow::Cow;
 use std::fmt::Formatter;
 use std::fs;
@@ -156,7 +156,7 @@ async fn copy_or_move(
                         }
                     }
                 })
-                .collect::<lingmo::iced::futures::stream::FuturesOrdered<_>>()
+                .collect::<cosmic::iced::futures::stream::FuturesOrdered<_>>()
                 .fold(Vec::new(), |mut pairs, pair| async move {
                     if let Some(pair) = pair {
                         pairs.push(pair);
@@ -1276,8 +1276,8 @@ mod tests {
     use std::io;
     use std::path::PathBuf;
 
-    use lingmo::iced::futures::channel::mpsc;
-    use lingmo::iced::futures::{StreamExt, future};
+    use cosmic::iced::futures::channel::mpsc;
+    use cosmic::iced::futures::{StreamExt, future};
     use log::debug;
     use test_log::test;
     use tokio::sync;
