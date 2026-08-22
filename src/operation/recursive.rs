@@ -9,7 +9,7 @@ use compio::buf::{IntoInner, IoBuf};
 use compio::driver::ToSharedFd;
 use compio::driver::op::AsyncifyFd;
 use compio::io::{AsyncReadAt, AsyncWriteAt};
-use cosmic::iced::futures;
+use lingmo::iced::futures;
 use futures::{FutureExt, StreamExt};
 use std::cell::Cell;
 use std::error::Error;
@@ -453,7 +453,7 @@ impl Op {
             }
         }
 
-        let (from_file_open_result, metadata, to_file_open_result) = cosmic::iced::futures::join!(
+        let (from_file_open_result, metadata, to_file_open_result) = lingmo::iced::futures::join!(
             async {
                 compio::fs::OpenOptions::new()
                     .read(true)

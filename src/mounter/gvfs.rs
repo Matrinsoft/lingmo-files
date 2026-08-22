@@ -1,6 +1,6 @@
-use cosmic::iced::futures::SinkExt;
-use cosmic::iced::{Subscription, stream};
-use cosmic::{Task, widget};
+use lingmo::iced::futures::SinkExt;
+use lingmo::iced::{Subscription, stream};
+use lingmo::{Task, widget};
 use gio::glib;
 use gio::prelude::*;
 use std::any::TypeId;
@@ -730,7 +730,7 @@ impl Mounter for Gvfs {
                 let event_rx = event_rx.clone();
                 stream::channel(
                     1,
-                    move |mut output: cosmic::iced::futures::channel::mpsc::Sender<
+                    move |mut output: lingmo::iced::futures::channel::mpsc::Sender<
                         MounterMessage,
                     >| async move {
                         command_tx.send(Cmd::Rescan).unwrap();

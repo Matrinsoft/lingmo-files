@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-use cosmic::app::Core;
-use cosmic::iced::advanced::widget::text::Style as TextStyle;
-use cosmic::iced::keyboard::Modifiers;
-use cosmic::iced::{Alignment, Background, Border, Length};
-use cosmic::widget::menu::key_bind::KeyBind;
-use cosmic::widget::menu::{self, ItemHeight, ItemWidth, MenuBar};
-use cosmic::widget::{
+use lingmo::app::Core;
+use lingmo::iced::advanced::widget::text::Style as TextStyle;
+use lingmo::iced::keyboard::Modifiers;
+use lingmo::iced::{Alignment, Background, Border, Length};
+use lingmo::widget::menu::key_bind::KeyBind;
+use lingmo::widget::menu::{self, ItemHeight, ItemWidth, MenuBar};
+use lingmo::widget::{
     self, Row, button, column, container, divider, responsive_menu_bar, space, text,
 };
-use cosmic::{Element, theme};
+use lingmo::{Element, theme};
 use i18n_embed::LanguageLoader;
 use mime_guess::Mime;
 use std::collections::HashMap;
@@ -23,8 +23,8 @@ use crate::tab::{
 };
 use crate::trash::{Trash, TrashExt};
 
-static MENU_ID: LazyLock<cosmic::widget::Id> =
-    LazyLock::new(|| cosmic::widget::Id::new("responsive-menu"));
+static MENU_ID: LazyLock<lingmo::widget::Id> =
+    LazyLock::new(|| lingmo::widget::Id::new("responsive-menu"));
 
 macro_rules! menu_button {
     ($($x:expr),+ $(,)?) => (
@@ -68,7 +68,7 @@ pub fn context_menu<'a>(
         }
         String::new()
     };
-    fn key_style(theme: &cosmic::Theme) -> TextStyle {
+    fn key_style(theme: &lingmo::Theme) -> TextStyle {
         let mut color = theme.cosmic().background(theme.transparent).component.on;
         color.alpha *= 0.75;
         TextStyle {
@@ -76,7 +76,7 @@ pub fn context_menu<'a>(
             ..Default::default()
         }
     }
-    fn disabled_style(theme: &cosmic::Theme) -> TextStyle {
+    fn disabled_style(theme: &lingmo::Theme) -> TextStyle {
         let mut color = theme.cosmic().background(theme.transparent).component.on;
         color.alpha *= 0.5;
         TextStyle {
@@ -183,7 +183,7 @@ pub fn context_menu<'a>(
             let lang_id = crate::localize::LANGUAGE_LOADER.current_language();
             let language = lang_id.language.as_str();
             // Cache?
-            cosmic::desktop::load_desktop_file(&[language.into()], path.into())
+            lingmo::desktop::load_desktop_file(&[language.into()], path.into())
         } else {
             None
         }
@@ -436,9 +436,9 @@ pub fn context_menu<'a>(
         }
     }
 
-    container(cosmic::widget::menu::menu_column::MenuColumn::with_children(children))
+    container(lingmo::widget::menu::menu_column::MenuColumn::with_children(children))
         .padding(1)
-        //TODO: move style to libcosmic
+        //TODO: move style to liblingmo
         .style(|theme| {
             let cosmic = theme.cosmic();
             let component = &cosmic.background(theme.transparent);

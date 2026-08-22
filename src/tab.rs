@@ -1,23 +1,23 @@
 #[cfg(feature = "desktop")]
-use cosmic::desktop::fde::{DesktopEntry, get_languages_from_env};
-use cosmic::iced::advanced::graphics;
-use cosmic::iced::advanced::text::{self, Paragraph};
-use cosmic::iced::alignment::Vertical;
-use cosmic::iced::clipboard::dnd::DndAction;
-use cosmic::iced::core::mouse::ScrollDelta;
-use cosmic::iced::core::widget::tree;
-use cosmic::iced::futures::{self, SinkExt};
-use cosmic::iced::keyboard::Modifiers;
-use cosmic::iced::widget::scrollable::{self, AbsoluteOffset, Viewport};
-use cosmic::iced::widget::{rule, stack};
-use cosmic::iced::{
+use lingmo::desktop::fde::{DesktopEntry, get_languages_from_env};
+use lingmo::iced::advanced::graphics;
+use lingmo::iced::advanced::text::{self, Paragraph};
+use lingmo::iced::alignment::Vertical;
+use lingmo::iced::clipboard::dnd::DndAction;
+use lingmo::iced::core::mouse::ScrollDelta;
+use lingmo::iced::core::widget::tree;
+use lingmo::iced::futures::{self, SinkExt};
+use lingmo::iced::keyboard::Modifiers;
+use lingmo::iced::widget::scrollable::{self, AbsoluteOffset, Viewport};
+use lingmo::iced::widget::{rule, stack};
+use lingmo::iced::{
     Alignment, Border, Color, ContentFit, Length, Point, Rectangle, Size, Subscription, Vector,
     padding, stream, window,
 };
-use cosmic::widget::menu::action::MenuAction;
-use cosmic::widget::menu::key_bind::KeyBind;
-use cosmic::widget::{self, DndDestination, DndSource, Id, RcElementWrapper, Widget, space};
-use cosmic::{Apply, Element, cosmic_theme, font, theme};
+use lingmo::widget::menu::action::MenuAction;
+use lingmo::widget::menu::key_bind::KeyBind;
+use lingmo::widget::{self, DndDestination, DndSource, Id, RcElementWrapper, Widget, space};
+use lingmo::{Apply, Element, cosmic_theme, font, theme};
 use i18n_embed::LanguageLoader;
 use icu::datetime::input::DateTime;
 use icu::datetime::options::TimePrecision;
@@ -226,7 +226,7 @@ fn button_style(
     condensed_radius: bool,
     desktop: bool,
 ) -> theme::Button {
-    //TODO: move to libcosmic?
+    //TODO: move to liblingmo?
     theme::Button::Custom {
         active: Box::new(move |focused, theme| {
             button_appearance(
@@ -1704,10 +1704,10 @@ impl Location {
     }
 }
 
-pub struct TaskWrapper(pub cosmic::Task<Message>);
+pub struct TaskWrapper(pub lingmo::Task<Message>);
 
-impl From<cosmic::Task<Message>> for TaskWrapper {
-    fn from(task: cosmic::Task<Message>) -> Self {
+impl From<lingmo::Task<Message>> for TaskWrapper {
+    fn from(task: lingmo::Task<Message>) -> Self {
         Self(task)
     }
 }
@@ -1731,7 +1731,7 @@ pub enum Command {
     ClearRecents,
     EmptyTrash,
     #[cfg(feature = "desktop")]
-    ExecEntryAction(cosmic::desktop::DesktopEntryData, usize),
+    ExecEntryAction(lingmo::desktop::DesktopEntryData, usize),
     Iced(TaskWrapper),
     OpenFile(Vec<PathBuf>),
     OpenInNewTab(PathBuf),
@@ -2328,7 +2328,7 @@ impl Item {
     /// Text widget for a filename in grid/icon view: word-or-glyph wrapping, middle-ellipsized to 3 lines.
     fn grid_display_name<'a>(
         name: impl Into<Cow<'a, str>> + 'a,
-    ) -> widget::Text<'a, cosmic::Theme, cosmic::Renderer> {
+    ) -> widget::Text<'a, lingmo::Theme, lingmo::Renderer> {
         widget::text::body(name)
             .wrapping(text::Wrapping::WordOrGlyph)
             .ellipsize(text::Ellipsize::Middle(text::EllipsizeHeightLimit::Lines(
@@ -2339,7 +2339,7 @@ impl Item {
     /// Text widget for a filename in list view: word-or-glyph wrapping, middle-ellipsized to 1 line.
     fn list_display_name<'a>(
         name: impl Into<Cow<'a, str>> + 'a,
-    ) -> widget::Text<'a, cosmic::Theme, cosmic::Renderer> {
+    ) -> widget::Text<'a, lingmo::Theme, lingmo::Renderer> {
         widget::text::body(name)
             .wrapping(text::Wrapping::WordOrGlyph)
             .ellipsize(text::Ellipsize::Middle(text::EllipsizeHeightLimit::Lines(
@@ -2368,7 +2368,7 @@ impl Item {
     }
 
     fn preview(&self) -> Element<'_, Message> {
-        let spacing = cosmic::theme::spacing();
+        let spacing = lingmo::theme::spacing();
         // This loads the image only if thumbnailing worked
         let icon = widget::icon::icon(self.icon_handle_grid.clone())
             .content_fit(ContentFit::Contain)
@@ -2610,7 +2610,7 @@ impl Item {
                     // Middle-ellipsize the digest to fit, full value on hover.
                     let value_text = widget::tooltip(
                         widget::text::body(value.clone())
-                            .font(cosmic::font::mono())
+                            .font(lingmo::font::mono())
                             .width(Length::Fill)
                             .wrapping(text::Wrapping::None)
                             .ellipsize(text::Ellipsize::Middle(text::EllipsizeHeightLimit::Lines(
@@ -3442,7 +3442,7 @@ impl Tab {
             .try_decode(&path, display_dimensions);
         if should_decode {
             vec![Command::Iced(
-                cosmic::iced::Task::perform(
+                lingmo::iced::Task::perform(
                     decode_large_image(path, target_dimensions),
                     move |result| {
                         result
@@ -3902,10 +3902,10 @@ impl Tab {
                         items.iter().find(|&item| item.selected).and_then(|item| {
                             let location = item.location_opt.as_ref()?;
                             let path = location.path_opt()?;
-                            cosmic::desktop::load_desktop_file(&[language.into()], path.into())
+                            lingmo::desktop::load_desktop_file(&[language.into()], path.into())
                         })
                     },
-                    |path| cosmic::desktop::load_desktop_file(&[language.into()], path),
+                    |path| lingmo::desktop::load_desktop_file(&[language.into()], path),
                 ) {
                     Some(entry) => commands.push(Command::ExecEntryAction(entry, action)),
                     None => log::warn!("Invalid desktop entry path passed to ExecEntryAction"),
@@ -4761,7 +4761,7 @@ impl Tab {
                 self.dnd_hovered = Some((loc.clone(), Instant::now()));
                 if loc != self.location {
                     commands.push(Command::Iced(
-                        cosmic::Task::future(async move {
+                        lingmo::Task::future(async move {
                             tokio::time::sleep(HOVER_DURATION).await;
                             Message::DndHover(loc)
                         })
@@ -4834,7 +4834,7 @@ impl Tab {
                     }
                 }
                 commands.push(Command::Iced(
-                    cosmic::Task::future(async move {
+                    lingmo::Task::future(async move {
                         match calculate_checksums(&path).await {
                             Ok(checksums) => {
                                 Message::Checksums(path, ChecksumState::Calculated(checksums))
@@ -4846,7 +4846,7 @@ impl Tab {
                 ));
             }
             Message::CopyChecksum(value) => {
-                commands.push(Command::Iced(cosmic::iced::clipboard::write(value).into()));
+                commands.push(Command::Iced(lingmo::iced::clipboard::write(value).into()));
             }
         }
 
@@ -5144,20 +5144,20 @@ impl Tab {
                         handle.clone()
                     };
 
-                    let content: cosmic::Element<'_, Message> =
+                    let content: lingmo::Element<'_, Message> =
                         if let Some(error_msg) = error_msg_opt {
                             widget::column::with_capacity(2)
                                 .push(widget::image(image_handle))
                                 .push(widget::text(format!("⚠ {}", error_msg)).size(13))
                                 .padding(space_xs)
-                                .align_x(cosmic::iced::Alignment::Center)
+                                .align_x(lingmo::iced::Alignment::Center)
                                 .into()
                         } else if is_loading {
                             widget::column::with_capacity(2)
                                 .push(widget::image(image_handle))
                                 .push(widget::text("Loading higher resolution...").size(14))
                                 .padding(space_xs)
-                                .align_x(cosmic::iced::Alignment::Center)
+                                .align_x(lingmo::iced::Alignment::Center)
                                 .into()
                         } else {
                             //TODO: use widget::image::viewer, when its zoom can be reset
@@ -5277,7 +5277,7 @@ impl Tab {
                 .width
         }
         fn text_width_body(content: &str) -> f32 {
-            //TODO: should libcosmic set the font when using widget::text::body?
+            //TODO: should liblingmo set the font when using widget::text::body?
             text_width(content, font::default(), 14.0, 20.0)
         }
         fn text_width_heading(content: &str) -> f32 {
@@ -6587,7 +6587,7 @@ impl Tab {
             tab_view = tab_view.style(|t| {
                 let mut a = widget::container::Style::default();
                 let c = t.cosmic();
-                a.border = cosmic::iced::core::Border {
+                a.border = lingmo::iced::core::Border {
                     color: (c.accent_color()).into(),
                     width: 1.,
                     radius: c.radius_0().into(),
@@ -7345,13 +7345,13 @@ pub fn respond_to_scroll_direction(delta: ScrollDelta, modifiers: &Modifiers) ->
 }
 
 fn text_editor_class(
-    theme: &cosmic::Theme,
-    status: cosmic::widget::text_editor::Status,
-) -> cosmic::iced::widget::text_editor::Style {
+    theme: &lingmo::Theme,
+    status: lingmo::widget::text_editor::Status,
+) -> lingmo::iced::widget::text_editor::Style {
     let cosmic = theme.cosmic();
     let container = theme.current_container();
 
-    let mut background: cosmic::iced::Color = container.component.base.into();
+    let mut background: lingmo::iced::Color = container.component.base.into();
     background.a = 0.25;
     let selection = cosmic.accent.base.into();
     let value = cosmic.palette.neutral_9.into();
@@ -7360,11 +7360,11 @@ fn text_editor_class(
     let placeholder = placeholder.into();
 
     match status {
-        cosmic::iced::widget::text_editor::Status::Active
-        | cosmic::iced::widget::text_editor::Status::Disabled => {
-            cosmic::iced::widget::text_editor::Style {
+        lingmo::iced::widget::text_editor::Status::Active
+        | lingmo::iced::widget::text_editor::Status::Disabled => {
+            lingmo::iced::widget::text_editor::Style {
                 background: background.into(),
-                border: cosmic::iced::Border {
+                border: lingmo::iced::Border {
                     radius: cosmic.corner_radii.radius_m.into(),
                     width: 2.0,
                     color: container.component.divider.into(),
@@ -7374,14 +7374,14 @@ fn text_editor_class(
                 selection,
             }
         }
-        cosmic::iced::widget::text_editor::Status::Hovered
-        | cosmic::iced::widget::text_editor::Status::Focused { .. } => {
-            cosmic::iced::widget::text_editor::Style {
+        lingmo::iced::widget::text_editor::Status::Hovered
+        | lingmo::iced::widget::text_editor::Status::Focused { .. } => {
+            lingmo::iced::widget::text_editor::Style {
                 background: background.into(),
-                border: cosmic::iced::Border {
+                border: lingmo::iced::Border {
                     radius: cosmic.corner_radii.radius_m.into(),
                     width: 2.0,
-                    color: cosmic::iced::Color::from(cosmic.accent.base),
+                    color: lingmo::iced::Color::from(cosmic.accent.base),
                 },
                 placeholder,
                 value,
@@ -7396,9 +7396,9 @@ mod tests {
     use std::path::PathBuf;
     use std::{fs, io};
 
-    use cosmic::iced::mouse::ScrollDelta;
-    use cosmic::iced::runtime::keyboard::Modifiers;
-    use cosmic::widget;
+    use lingmo::iced::mouse::ScrollDelta;
+    use lingmo::iced::runtime::keyboard::Modifiers;
+    use lingmo::widget;
     use log::{debug, trace};
     use mime_guess::mime;
     use tempfile::TempDir;

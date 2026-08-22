@@ -4,10 +4,10 @@ use std::any::TypeId;
 use std::num::NonZeroU16;
 use std::path::PathBuf;
 
-use cosmic::cosmic_config::cosmic_config_derive::CosmicConfigEntry;
-use cosmic::cosmic_config::{self, CosmicConfigEntry};
-use cosmic::iced::Subscription;
-use cosmic::{Application, theme};
+use lingmo::cosmic_config::cosmic_config_derive::CosmicConfigEntry;
+use lingmo::cosmic_config::{self, CosmicConfigEntry};
+use lingmo::iced::Subscription;
+use lingmo::{Application, theme};
 use serde::{Deserialize, Serialize};
 
 use crate::FxOrderMap;
