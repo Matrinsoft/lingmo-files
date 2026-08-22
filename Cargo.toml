@@ -158,7 +158,7 @@ tokio = { version = "1", features = ["rt", "macros"] }
 # cosmic-theme = { git = "https://github.com/Matrinsoft/libcosmic//", branch = "theme-v2" }
 
 
-# [patch.'https://github.com/Matrinsoft/smithay-clipboard']
+# [patch.'https://github.com/pop-os/smithay-clipboard']
 # smithay-clipboard = { path = "../smithay-clipboard" }
 
 [workspace]
