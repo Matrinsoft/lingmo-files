@@ -12,7 +12,7 @@ jiff = "0.2"
 jiff-icu = "0.2"
 icu = { version = "2.2.0", features = ["compiled_data"] }
 cctk = { git = "https://github.com/Matrinsoft/lingmo-protocols", package = "cosmic-client-toolkit", rev = "bc41a9a7", optional = true }
-cosmic-mime-apps = { git = "https://github.com/Matrinsoft/lingmo-mime-apps.git", optional = true }
+lingmo-mime-apps = { git = "https://github.com/Matrinsoft/lingmo-mime-apps.git", optional = true }
 dirs = "6.0.0"
 gio = { version = "0.21", optional = true }
 glib = { version = "0.21", optional = true }
@@ -113,7 +113,7 @@ default = [
     "wgpu",
 ]
 dbus-config = ["libcosmic/dbus-config"]
-desktop = ["libcosmic/desktop", "dep:cosmic-mime-apps", "dep:xdg"]
+desktop = ["libcosmic/desktop", "dep:lingmo-mime-apps", "dep:xdg"]
 desktop-applet = []
 gvfs = ["dep:gio", "dep:glib"]
 io-uring = ["compio/io-uring"]

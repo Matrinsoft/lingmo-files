@@ -34,7 +34,7 @@ pub async fn watch(mut emitter: impl FnMut() + 'static + Send) {
     );
 
     if let Ok(mut watcher) = watcher_result {
-        let system_paths = cosmic_mime_apps::list_paths();
+        let system_paths = lingmo_mime_apps::list_paths();
         let local_paths = (|| {
             let base_dirs = xdg::BaseDirectories::new();
             let Some(home) = base_dirs.get_config_home() else {
@@ -331,8 +331,8 @@ impl MimeAppCache {
         self.cache.clear();
         self.terminals.clear();
 
-        let mut list = cosmic_mime_apps::List::default();
-        let paths = cosmic_mime_apps::list_paths();
+        let mut list = lingmo_mime_apps::List::default();
+        let paths = lingmo_mime_apps::list_paths();
         list.load_from_paths(&paths);
         let locales = fde::get_languages_from_env();
         let desktop_entries = fde::Iter::new(fde::default_paths()).entries(Some(&locales));
@@ -564,12 +564,12 @@ impl MimeAppCache {
 
     #[cfg(feature = "desktop")]
     pub fn set_default(&mut self, mime: Mime, mut id: String) {
-        let Some(path) = cosmic_mime_apps::local_list_path() else {
+        let Some(path) = lingmo_mime_apps::local_list_path() else {
             log::warn!("failed to find mimeapps.list path");
             return;
         };
 
-        let mut list = cosmic_mime_apps::List::default();
+        let mut list = lingmo_mime_apps::List::default();
         match fs::read_to_string(&path) {
             Ok(string) => {
                 list.load_from(&string);
