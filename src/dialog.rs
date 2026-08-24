@@ -289,7 +289,7 @@ impl<M: Send + 'static> Dialog<M> {
             config,
         };
 
-        let (cosmic, cosmic_command) = cosmic::<App>::init((core, flags));
+        let (cosmic, cosmic_command) = Cosmic::<App>::init((core, flags));
         (
             Self {
                 cosmic,
