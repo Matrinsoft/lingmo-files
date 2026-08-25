@@ -2338,7 +2338,7 @@ impl Application for App {
     type Message = Message;
 
     /// The unique application ID to supply to the window manager.
-    const APP_ID: &'static str = "com.system76.CosmicFiles";
+    const APP_ID: &'static str = "com.lingmoos.LingmoFiles";
 
     fn core(&self) -> &Core {
         &self.core
@@ -3073,7 +3073,7 @@ impl Application for App {
                 {
                     // Use the dialog ID to make it float
                     settings.platform_specific.application_id =
-                        "com.system76.CosmicFilesDialog".to_string();
+                        "com.lingmoos.LingmoFilesDialog".to_string();
                 }
 
                 let (id, command) = window::open(settings);
@@ -3101,7 +3101,7 @@ impl Application for App {
                         {
                             // Use the dialog ID to make it float
                             settings.platform_specific.application_id =
-                                "com.system76.CosmicFilesDialog".to_string();
+                                "com.lingmoos.LingmoFilesDialog".to_string();
                         }
 
                         let (id, command) = window::open(settings);
@@ -4186,7 +4186,7 @@ impl Application for App {
                             {
                                 // Use the dialog ID to make it float
                                 settings.platform_specific.application_id =
-                                    "com.system76.CosmicFilesDialog".to_string();
+                                    "com.lingmoos.LingmoFilesDialog".to_string();
                             }
 
                             let (id, command) = window::open(settings);

@@ -1008,7 +1008,7 @@ impl Application for App {
     type Message = Message;
 
     /// The unique application ID to supply to the window manager.
-    const APP_ID: &'static str = "com.system76.CosmicFilesDialog";
+    const APP_ID: &'static str = "com.lingmoos.LingmoFilesDialog";
 
     fn core(&self) -> &Core {
         &self.core
