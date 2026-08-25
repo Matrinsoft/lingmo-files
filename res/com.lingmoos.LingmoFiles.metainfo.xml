@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.lingmoos.LingmoFiles</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <project_group>Lingmo</project_group>
+  <developer_name>Matrinsoft</developer_name>
+  <update_contact>jeremy@matrinsoft.com</update_contact>
+  <url type="homepage">https://github.com/Matrinsoft/cosmic-files</url>
+  <url type="bugtracker">https://github.com/Matrinsoft/cosmic-files</url>
+  <name>Lingmo Files</name>
+  <summary>File manager for the Lingmo desktop</summary>
+  <description>
+    <p>File manager for the Lingmo desktop</p>
+    <p xml:lang="ar">مدير ملفات لسطح مكتب Lingmo</p>
+    <p xml:lang="cs">Správce souborů pro prostředí Lingmo</p>
+    <p xml:lang="pl">Menedżer plików pulpitu Lingmo</p>
+    <p xml:lang="hu">Fájlkezelő a Lingmo asztali környezethez</p>
+    <p xml:lang="pt_BR">Gerenciador de arquivos do Lingmo</p>
+    <p xml:lang="pt">Gerenciador de arquivos do Lingmo</p>
+    <p xml:lang="sk">Správca súborov pre prostredie Lingmo</p>
+    <p xml:lang="es">Gestor de archivos de Lingmo</p>
+    <p xml:lang="it">File manager di Lingmo</p>
+    <p xml:lang="sv">Filhanterare för skrivbordsmiljön Lingmo</p>
+  </description>
+  <keywords>
+    <keyword>Folder</keyword>
+    <keyword>Manager</keyword>
+  </keywords>
+  <launchable type="desktop-id">com.lingmoos.LingmoFiles.desktop</launchable>
+  <icon type="remote" height="256" width="256">https://raw.githubusercontent.com/Matrinsoft/cosmic-files/master/res/icons/hicolor/256x256/apps/com.lingmoos.LingmoFiles.svg</icon>
+  <provides>
+    <id>com.lingmoos.LingmoApplication</id>
+    <mimetypes>
+      <mimetype>inode/directory</mimetype>
+    </mimetypes>
+    <binaries>
+      <binary>cosmic-files</binary>
+    </binaries>
+  </provides>
+</component>
